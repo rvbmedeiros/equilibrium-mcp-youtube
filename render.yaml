@@ -1,0 +1,56 @@
+services:
+  # Backend Spring Boot
+  - type: web
+    name: equilibrium-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: ./
+    plan: free
+    region: oregon  # Pode ser: oregon, frankfurt, singapore
+    branch: master
+    # Health check
+    healthCheckPath: /actuator/health
+    # Variáveis de ambiente
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: OPENAI_API_KEY
+        sync: false  # Configurar manualmente no dashboard
+      - key: OPENAI_MODEL
+        value: gpt-4o
+      - key: OPENAI_MAX_TOKENS
+        value: 2500
+      # Database connection - propriedades individuais
+      - key: DATABASE_HOST
+        fromDatabase:
+          name: equilibrium-db
+          property: host
+      - key: DATABASE_PORT
+        fromDatabase:
+          name: equilibrium-db
+          property: port
+      - key: DATABASE_NAME
+        fromDatabase:
+          name: equilibrium-db
+          property: database
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: equilibrium-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: equilibrium-db
+          property: password
+    # Auto-deploy ao fazer push
+    autoDeploy: true
+
+# Banco de Dados PostgreSQL
+databases:
+  - name: equilibrium-db
+    databaseName: equilibrium
+    user: equilibrium_user
+    plan: free  # 90 dias grátis, depois $7/mês para starter
+    region: oregon  # Mesma região do backend para baixa latência
+    ipAllowList: []  # Vazio = permite conexões do Render
