@@ -21,6 +21,7 @@ public class UserState {
     private Double height; // em cm
     private String activityLevel; // sedentary, light, moderate, active, very_active
     private String healthGoal; // maintain, lose, gain, wellness
+    private String comorbidities; // Comorbidades em texto livre para IA
     
     // Dados de humor
     private String currentMood; // great, good, ok, bad, terrible
